@@ -6,18 +6,25 @@ import firebase_admin
 from firebase_admin import firestore
 
 import vertexai
-from vertexai.generative_models import GenerativeModel
+from vertexai.generative_models import GenerativeModel, GenerationConfig
 from vertexai.language_models import TextEmbeddingInput, TextEmbeddingModel
+import vertexai.preview.generative_models as generative_models
+
+PROJECT_ID = os.getenv('PROJECT_ID')
+LOCATION = os.getenv('LOCATION')
+
+# Initialize Vertex AI SDK
+vertexai.init(project=PROJECT_ID, location=LOCATION)
 
 # Instantiating the Firebase client
 firebase_app = firebase_admin.initialize_app()
 db = firestore.client()
 
 # Instantiate an embedding model here
-embedding_model = None
+embedding_model = TextEmbeddingModel.from_pretrained("textembedding-gecko@002")
 
 # Instantiate a Generative AI model here
-gen_model = None
+gen_model = GenerativeModel("gemini-1.5-flash-001")
 
 # Helper function that reads from the config file. 
 def get_config_value(config, section, key, default=None):
