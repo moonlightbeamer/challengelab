@@ -51,6 +51,12 @@ MAX_OUTPUT_TOKENS = get_config_value(config, 'palm', 'max_output_tokens', 256)
 TOP_P = get_config_value(config, 'palm', 'top_p', 0.8)
 TOP_K = get_config_value(config, 'palm', 'top_k', 40)
 
+generation_config = GenerationConfig(
+    temperature = TEMPERATURE,
+    top_p = TOP_P,
+    candidate_count = 1,
+    max_output_tokens = MAX_OUTPUT_TOKENS,
+)
 
 app = Flask(__name__)
 
@@ -99,7 +105,11 @@ def ask_gemini(question, data):
     # You will need to change the code below to ask Gemni to
     # answer the user's question based on the data retrieved
     # from their search
-    response = "Not implemented!"
+    # response = "Not implemented!"
+    # return response
+    SYSTEM_PROMPT = "{CONTEXT} and you can only answer questions based on the data provided below, if you can't find answer, do not hallucinate, just say you can't find answer."
+    prompt = f"{SYSTEM_PROMPT} data: {data}\n\nUser: {question}\n\nAssistant: "
+    response = gen_model.generate(prompt, generation_config).text
     return response
 
 
