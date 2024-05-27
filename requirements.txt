@@ -2,10 +2,5 @@ flask
 Jinja2
 pytest
 pyyaml
-pypdf
 google-cloud-aiplatform
-google-cloud-firestore
-google-cloud-storage
 firebase-admin
-langchain
-langchain_community
