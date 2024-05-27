@@ -13,3 +13,4 @@ gcloud builds submit --tag=gcr.io/your-project-id/freshbot:v0.1 .
 
 # To deploy to Cloud Run
 gcloud run deploy freshbot --image gcr.io/your-project-id/freshbot:v0.1 --allow-unauthenticated
+
