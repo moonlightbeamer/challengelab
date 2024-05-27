@@ -1,0 +1,6 @@
+flask
+Jinja2
+pytest
+pyyaml
+google-cloud-aiplatform
+firebase-admin
