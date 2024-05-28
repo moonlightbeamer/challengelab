@@ -8,9 +8,19 @@ RUN curl -sSL https://sdk.cloud.google.com | bash
 # Adding the package path to local
 ENV PATH $PATH:/usr/local/gcloud/google-cloud-sdk/bin
 
-# get the project id
-RUN export PROJECT_ID=$(gcloud config get-value project)
-ENV PROJECT_ID=acn-amex-account-poc-sandbox
+# # get the project id
+# RUN export PROJECT_ID=$(gcloud config get-value project)
+
+# Configure the Google Cloud SDK
+RUN gcloud init --console-only
+
+# Get the Project ID
+RUN PROJECT_ID=$(gcloud config get-value project)
+
+# Export the Project ID as an environment variable
+ENV PROJECT_ID=$PROJECT_ID
+
+# ENV PROJECT_ID=acn-amex-account-poc-sandbox
 ENV LOCATION=us-central1
 RUN pip install gunicorn
 RUN pip install -r requirements.txt
