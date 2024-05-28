@@ -138,7 +138,7 @@ def search_vector_database(question):
     # 4. Get the five documents from Firestore that match the IDs
     data = []
     for id in ids:
-        doc = firestore_db.collection("page_content").document(id).get(['content']).to_dict()
+        doc = firestore_db.collection("page_content").document(id).get().to_dict()
         data.append(doc)
     result = ""
     for text in data:
