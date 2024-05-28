@@ -140,7 +140,11 @@ def search_vector_database(question):
     for id in ids:
         doc = firestore_db.collection("page_content").document(id).get(['content']).to_dict()
         data.append(doc)
-    return data
+    result = ""
+    for text in data:
+        result += text.content + " "
+    data = text.content
+    return result
 
 def ask_gemini(question, data):
     # You will need to change the code below to ask Gemni to
