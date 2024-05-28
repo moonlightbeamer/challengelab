@@ -53,10 +53,32 @@ TOP_P = get_config_value(config, 'palm', 'top_p', 0.8)
 TOP_K = get_config_value(config, 'palm', 'top_k', 40)
 
 # Initialize Vertex AI SDK
-# vertexai.init(project=PROJECT_ID, location=LOCATION)
+vertexai.init(project=PROJECT_ID, location=LOCATION)
 
 # Instantiate an embedding model here
 embedding_model = TextEmbeddingModel.from_pretrained(EMB_MODEL_ID)
+
+# Instantiate a generative model here
+gen_model = GenerativeModel(
+    GEN_MODEL_ID,
+    system_prompt=CONTEXT + " and you can only answer questions based on the data provided below, if you can't find answer, do not hallucinate, just say you can't find answer.",
+)
+
+# Set generative model parameters
+generation_config = GenerationConfig(
+    temperature = TEMPERATURE,
+    top_p = TOP_P,
+    candidate_count = 1,
+    max_output_tokens = MAX_OUTPUT_TOKENS,
+)
+
+# Set generative model safety settings
+safety_settings = {
+    HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
+    HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
+    HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
+    HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
+}
 
 app = Flask(__name__)
 
@@ -105,31 +127,10 @@ def ask_gemini(question, data):
     # You will need to change the code below to ask Gemni to
     # answer the user's question based on the data retrieved
     # from their search
-    # response = "Not implemented!"
-    # return response
     # SYSTEM_PROMPT = "{CONTEXT} and you can only answer questions based on the data provided below, if you can't find answer, do not hallucinate, just say you can't find answer."
     # Instantiate a Generative AI model here
-
-    # Set model parameters
-    generation_config = GenerationConfig(
-        temperature = TEMPERATURE,
-        top_p = TOP_P,
-        candidate_count = 1,
-        max_output_tokens = MAX_OUTPUT_TOKENS,
-    )
-
-    # Set safety settings
-    safety_settings = {
-        HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
-        HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
-        HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
-        HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
-    }
     prompt = "User: " + question + "\n\n Answer: "
     contents = [prompt]
-
-    vertexai.init(project="acn-amex-account-poc-sandbox", location="us-central1")
-    gen_model = GenerativeModel("gemini-1.5-flash-001")
     response = gen_model.generate_content(
         contents=contents,
         generation_config=generation_config,
