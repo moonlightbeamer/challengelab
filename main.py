@@ -142,8 +142,7 @@ def search_vector_database(question):
         data.append(doc)
     result = ""
     for text in data:
-        result += text.content + " "
-    data = text.content
+        result += text['content'] + " "
     return result
 
 def ask_gemini(question, data):
