@@ -136,12 +136,15 @@ def ask_gemini(question, data):
     contents = [prompt]
     # Create the bucket if it doesn't exist
     try:
+        # response = gen_model.generate(
+        #     contents, 
+        #     generation_config=generation_config,
+        #     safety_settings=safety_settings,
+        # )
         response = gen_model.generate(
-            contents, 
-            generation_config=generation_config,
-            safety_settings=safety_settings,
+            ["what is the weather today in Longmont, CO"]   
         )
-        return response
+        return response.text
     except:
         response = "Not implemented!"
         return response
