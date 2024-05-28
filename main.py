@@ -141,7 +141,7 @@ def ask_gemini(question, data):
             generation_config=generation_config,
             safety_settings=safety_settings,
         )
-        return response.text
+        return response
     except:
         response = "Not implemented!"
         return response
