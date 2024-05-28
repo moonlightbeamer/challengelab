@@ -133,20 +133,13 @@ def search_vector_database(question):
     )
 
     # 3. Get the IDs for the five embeddings that are returned
-    ids = [result.id for result in search_results[0]]
+    ids = [int(result.id) for result in search_results[0]]
 
     # 4. Get the five documents from Firestore that match the IDs
-    docs = firestore_db.collection("page_content").where(u'id', 'in', ids).stream()
-
-    # 5. Concatenate the documents into a single string and return it
-    data = ""
-    for doc in docs:
-        doc_data = doc.to_dict()
-        doc_text = doc_data.get('content', '')  # the text content is stored in the 'content' field
-        data += doc_text + ' '  # Append the document text to data
-
-    # Remove the trailing space
-    data = data.strip()
+    data = []
+    for id in ids:
+        doc = db.collection("page_content").document(id).get(['content']).to_dict()
+        data.append(doc)
     return data
 
 def ask_gemini(question, data):
