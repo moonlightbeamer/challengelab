@@ -8,7 +8,6 @@ RUN curl -sSL https://sdk.cloud.google.com | bash
 # Adding the package path to local
 ENV PATH $PATH:/usr/local/gcloud/google-cloud-sdk/bin
 
-RUN exec -l $SHELL
 RUN gcloud init
 
 # get the project id
