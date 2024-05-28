@@ -133,7 +133,7 @@ def search_vector_database(question):
     )
 
     # 3. Get the IDs for the five embeddings that are returned
-    ids = [int(result.id) for result in search_results[0]]
+    ids = [result.id for result in search_results[0]]
 
     # 4. Get the five documents from Firestore that match the IDs
     data = []
