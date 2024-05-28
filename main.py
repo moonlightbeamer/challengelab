@@ -144,9 +144,9 @@ def ask_gemini(question, data):
         vertexai.init(project="acn-amex-account-poc-sandbox", location="us-central1")
         gen_model = GenerativeModel("gemini-1.5-flash-001")
         response = gen_model.generate(
-            ["what is the weather today in Longmont, CO"]   
+            ["what is the weather today in Longmont, CO"],
         )
-        response = str(response)
+        response = str(response.text)
         return response
     except:
         response = "Not implemented!"
