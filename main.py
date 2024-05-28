@@ -53,7 +53,7 @@ TOP_P = get_config_value(config, 'palm', 'top_p', 0.8)
 TOP_K = get_config_value(config, 'palm', 'top_k', 40)
 
 # Initialize Vertex AI SDK
-vertexai.init(project=PROJECT_ID, location=LOCATION)
+# vertexai.init(project=PROJECT_ID, location=LOCATION)
 
 # Instantiate an embedding model here
 embedding_model = TextEmbeddingModel.from_pretrained(EMB_MODEL_ID)
@@ -109,13 +109,6 @@ def ask_gemini(question, data):
     # return response
     # SYSTEM_PROMPT = "{CONTEXT} and you can only answer questions based on the data provided below, if you can't find answer, do not hallucinate, just say you can't find answer."
     # Instantiate a Generative AI model here
-    gen_model = GenerativeModel(
-        GEN_MODEL_ID
-        # system_instruction=[
-        #     CONTEXT,
-        #     "You can only answer questions based on the context and data provided. If you can't find an answer, do not make up an answer, but instead ask user to rephrase their question within your context.",
-        # ],
-    )
 
     # Set model parameters
     generation_config = GenerationConfig(
@@ -139,9 +132,7 @@ def ask_gemini(question, data):
         vertexai.init(project="acn-amex-account-poc-sandbox", location="us-central1")
         gen_model = GenerativeModel("gemini-1.5-flash-001")
         response = gen_model.generate_content(
-            ["what is the weather today in Longmont, CO"], 
-            generation_config=generation_config,
-            safety_settings=safety_settings,
+            ["what is the weather today in Longmont, CO"]
         )
         
         # response = gen_model.generate(
