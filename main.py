@@ -6,25 +6,26 @@ import firebase_admin
 from firebase_admin import firestore
 
 import vertexai
-from vertexai.generative_models import GenerativeModel, GenerationConfig
-from vertexai.language_models import TextEmbeddingInput, TextEmbeddingModel
-import vertexai.preview.generative_models as generative_models
+from vertexai.generative_models import (
+    GenerationConfig,
+    GenerativeModel,
+    HarmBlockThreshold,
+    HarmCategory,
+    Part,
+)
+from vertexai.language_models import (
+    TextEmbeddingInput, 
+    TextEmbeddingModel,
+)
 
 PROJECT_ID = os.getenv('PROJECT_ID')
 LOCATION = os.getenv('LOCATION')
-
-# Initialize Vertex AI SDK
-vertexai.init(project=PROJECT_ID, location=LOCATION)
+GEN_MODEL_ID = "gemini-1.5-flash-001"
+EMB_MODEL_ID = "textembedding-gecko@002"
 
 # Instantiating the Firebase client
 firebase_app = firebase_admin.initialize_app()
 db = firestore.client()
-
-# Instantiate an embedding model here
-embedding_model = TextEmbeddingModel.from_pretrained("textembedding-gecko@002")
-
-# Instantiate a Generative AI model here
-gen_model = GenerativeModel("gemini-1.5-flash-001")
 
 # Helper function that reads from the config file. 
 def get_config_value(config, section, key, default=None):
@@ -51,12 +52,36 @@ MAX_OUTPUT_TOKENS = get_config_value(config, 'palm', 'max_output_tokens', 256)
 TOP_P = get_config_value(config, 'palm', 'top_p', 0.8)
 TOP_K = get_config_value(config, 'palm', 'top_k', 40)
 
+# Initialize Vertex AI SDK
+vertexai.init(project=PROJECT_ID, location=LOCATION)
+
+# Instantiate an embedding model here
+embedding_model = TextEmbeddingModel.from_pretrained(EMB_MODEL_ID)
+
+# Instantiate a Generative AI model here
+gen_model = GenerativeModel(
+    GEN_MODEL_ID,
+    system_instruction=[
+        CONTEXT,
+        "You can only answer questions based on the context and data provided. If you can't find an answer, do not make up an answer, but instead ask user to rephrase their question within your context.",
+    ],
+)
+
+# Set model parameters
 generation_config = GenerationConfig(
     temperature = TEMPERATURE,
     top_p = TOP_P,
-    candidate_count = 1,
+    candidate_count = 5,
     max_output_tokens = MAX_OUTPUT_TOKENS,
 )
+
+# Set safety settings
+safety_settings = {
+    HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
+    HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
+    HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
+    HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
+}
 
 app = Flask(__name__)
 
@@ -108,10 +133,15 @@ def ask_gemini(question, data):
     # response = "Not implemented!"
     # return response
     # SYSTEM_PROMPT = "{CONTEXT} and you can only answer questions based on the data provided below, if you can't find answer, do not hallucinate, just say you can't find answer."
-    # prompt = f"{SYSTEM_PROMPT} data: {data}\n\nUser: {question}\n\nAssistant: "
-    prompt = f"User: {question}\n\nAssistant: "
-    response = gen_model.generate(prompt, generation_config).text
-    return response
+
+    prompt = "User: " + question + "\n\n Answer: "
+    contents = [prompt]
+    response = gen_model.generate(
+        contents, 
+        generation_config=generation_config,
+        safety_settings=safety_settings,
+    )
+    return response.text
 
 
 if __name__ == '__main__':
