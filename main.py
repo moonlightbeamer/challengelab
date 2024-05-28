@@ -111,7 +111,8 @@ def ask_gemini(question, data):
     # prompt = f"{SYSTEM_PROMPT} data: {data}\n\nUser: {question}\n\nAssistant: "
     # prompt = f"User: {question}\n\nAssistant: "
     # response = gen_model.generate(prompt, generation_config).text
-    response = "{PROJECT_ID} {LOCATION} {question}"
+    # response = "{PROJECT_ID} {LOCATION} {question}"
+    response = "{question}"
     return response
 
 
