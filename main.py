@@ -146,16 +146,16 @@ UID = datetime.now().strftime("%m%d%H%M")
 # # Close the PDF file
 # pdf_file.close()
 
-# Create a GCS bucket to store the JSONL file
-client = storage.Client(project=PROJECT_ID)
-bucket = client.bucket(BUCKET_NAME)
+# # Create a GCS bucket to store the JSONL file
+# client = storage.Client(project=PROJECT_ID)
+# bucket = client.bucket(BUCKET_NAME)
 
-# Create the bucket if it doesn't exist
-try:
-  bucket = client.create_bucket(bucket, location=LOCATION)
-  print(f"Bucket {BUCKET_NAME} created successfully.")
-except Exception as e:
-  print(f"Error creating bucket: {e}")
+# # Create the bucket if it doesn't exist
+# try:
+#   bucket = client.create_bucket(bucket, location=LOCATION)
+#   print(f"Bucket {BUCKET_NAME} created successfully.")
+# except Exception as e:
+#   print(f"Error creating bucket: {e}")
 
 # # Upload the file to the bucket
 # blob = bucket.blob(JSONL_FILE_NAME)
