@@ -63,7 +63,7 @@ gen_model = GenerativeModel(
     GEN_MODEL_ID,
     system_instruction=[
         CONTEXT,
-        "You can only answer questions based on the context and data provided. and when you answer it, indicate which page you are getting tha answer from. If you can't find an answer, do not make up an answer, but instead ask user to rephrase their question within your context.",
+        "You can only answer questions based on the context and data provided. and when you answer it, indicate which page you are getting tha answer from. If the page number is not found, it means it is not from the data provided, so you shouldn't answer this question. If you can't find an answer, do not make up an answer, but instead ask user to rephrase their question within your context.",
     ],
 )
 
