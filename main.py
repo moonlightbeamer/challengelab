@@ -141,6 +141,7 @@ def ask_gemini(question, data):
         #     generation_config=generation_config,
         #     safety_settings=safety_settings,
         # )
+        gen_model = GenerativeModel("gemini-1.5-flash-001")
         response = gen_model.generate(
             ["what is the weather today in Longmont, CO"]   
         )
