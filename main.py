@@ -58,31 +58,6 @@ vertexai.init(project=PROJECT_ID, location=LOCATION)
 # Instantiate an embedding model here
 embedding_model = TextEmbeddingModel.from_pretrained(EMB_MODEL_ID)
 
-# Instantiate a Generative AI model here
-gen_model = GenerativeModel(
-    GEN_MODEL_ID,
-    system_instruction=[
-        CONTEXT,
-        "You can only answer questions based on the context and data provided. If you can't find an answer, do not make up an answer, but instead ask user to rephrase their question within your context.",
-    ],
-)
-
-# Set model parameters
-generation_config = GenerationConfig(
-    temperature = TEMPERATURE,
-    top_p = TOP_P,
-    candidate_count = 5,
-    max_output_tokens = MAX_OUTPUT_TOKENS,
-)
-
-# Set safety settings
-safety_settings = {
-    HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
-    HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
-    HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
-    HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
-}
-
 app = Flask(__name__)
 
 # The Home page route
@@ -133,7 +108,30 @@ def ask_gemini(question, data):
     # response = "Not implemented!"
     # return response
     # SYSTEM_PROMPT = "{CONTEXT} and you can only answer questions based on the data provided below, if you can't find answer, do not hallucinate, just say you can't find answer."
+    # Instantiate a Generative AI model here
+    gen_model = GenerativeModel(
+        GEN_MODEL_ID,
+        system_instruction=[
+            CONTEXT,
+            "You can only answer questions based on the context and data provided. If you can't find an answer, do not make up an answer, but instead ask user to rephrase their question within your context.",
+        ],
+    )
 
+    # Set model parameters
+    generation_config = GenerationConfig(
+        temperature = TEMPERATURE,
+        top_p = TOP_P,
+        candidate_count = 5,
+        max_output_tokens = MAX_OUTPUT_TOKENS,
+    )
+
+    # Set safety settings
+    safety_settings = {
+        HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
+        HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
+        HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
+        HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
+    }
     prompt = "User: " + question + "\n\n Answer: "
     contents = [prompt]
     response = gen_model.generate(
