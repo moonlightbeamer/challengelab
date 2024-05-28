@@ -134,20 +134,19 @@ def search_vector_database(question):
 
     # # 3. Get the IDs for the five embeddings that are returned
     # ids = [result.id for result in search_results]
+    ids = [1, 2, 3, 4, 5]
+    # 4. Get the five documents from Firestore that match the IDs
+    docs = firestore_db.collection("page_content").where(u'id', 'in', ids).stream()
 
-    # # 4. Get the five documents from Firestore that match the IDs
-    # docs = firestore_db.collection("page_content").where(u'id', 'in', ids).stream()
-
-    # # 5. Concatenate the documents into a single string and return it
-    # data = ""
-    # for doc in docs:
-    #     doc_data = doc.to_dict()
-    #     doc_text = doc_data.get('content', '')  # the text content is stored in the 'content' field
-    #     data += doc_text + ' '  # Append the document text to data
-
-    # # Remove the trailing space
-    # data = data.strip()
+    # 5. Concatenate the documents into a single string and return it
     data = ""
+    for doc in docs:
+        doc_data = doc.to_dict()
+        doc_text = doc_data.get('content', '')  # the text content is stored in the 'content' field
+        data += doc_text + ' '  # Append the document text to data
+
+    # Remove the trailing space
+    data = data.strip()
     return data
 
 def ask_gemini(question, data):
@@ -156,7 +155,7 @@ def ask_gemini(question, data):
     # from their search
     # SYSTEM_PROMPT = "{CONTEXT} and you can only answer questions based on the data provided below, if you can't find answer, do not hallucinate, just say you can't find answer."
     # Instantiate a Generative AI model here
-    prompt = "User: " + question + "\n\n Answer: "   # "data: " + data + 
+    prompt = "data: " + data + "\n\n User: " + question + "\n\n Answer: "   # "data: " + data + 
     contents = [prompt]
     try:
         response = gen_model.generate_content(
