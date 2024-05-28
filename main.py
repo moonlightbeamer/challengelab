@@ -114,7 +114,7 @@ def ask_gemini(question, data):
     generation_config = GenerationConfig(
         temperature = TEMPERATURE,
         top_p = TOP_P,
-        candidate_count = 5,
+        candidate_count = 1,
         max_output_tokens = MAX_OUTPUT_TOKENS,
     )
 
@@ -132,7 +132,9 @@ def ask_gemini(question, data):
         vertexai.init(project="acn-amex-account-poc-sandbox", location="us-central1")
         gen_model = GenerativeModel("gemini-1.5-flash-001")
         response = gen_model.generate_content(
-            ["what is the weather today in Longmont, CO"]
+            ["what is the weather today in Longmont, CO"],
+            generation_config=generation_config,
+            safety_settings=safety_settings,
         )
         
         # response = gen_model.generate(
