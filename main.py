@@ -127,24 +127,15 @@ def ask_gemini(question, data):
     }
     prompt = "User: " + question + "\n\n Answer: "
     contents = [prompt]
-    # Create the bucket if it doesn't exist
-    try:
-        vertexai.init(project="acn-amex-account-poc-sandbox", location="us-central1")
-        gen_model = GenerativeModel("gemini-1.5-flash-001")
-        response = gen_model.generate_content(
-            ["what is the weather today in Longmont, CO"],
-            generation_config=generation_config,
-            safety_settings=safety_settings,
-        )
-        
-        # response = gen_model.generate(
-        #     ["what is the weather today in Longmont, CO"],
-        # )
-        response = response.text
-        # response = "hello"
-    except:
-        response = "Not implemented!"
-    
+
+    vertexai.init(project="acn-amex-account-poc-sandbox", location="us-central1")
+    gen_model = GenerativeModel("gemini-1.5-flash-001")
+    response = gen_model.generate_content(
+        contents=contents,
+        generation_config=generation_config,
+        safety_settings=safety_settings,
+    )
+    response = response.text
     return response
         
 
