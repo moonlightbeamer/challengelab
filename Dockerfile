@@ -14,8 +14,7 @@ RUN mkdir -p /usr/local/gcloud \
 ENV PATH $PATH:/usr/local/gcloud/google-cloud-sdk/bin
 
 # get the project id
-RUN export CURRENT_PROJECT_ID=$(gcloud config get-value project)
-ENV PROJECT_ID=$CURRENT_PROJECT_ID
+RUN export PROJECT_ID=$(gcloud config get-value project)
 ENV LOCATION="us-central1"
 RUN pip install gunicorn
 RUN pip install -r requirements.txt
