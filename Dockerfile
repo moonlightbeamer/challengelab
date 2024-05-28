@@ -2,16 +2,14 @@ FROM python:3.9
 WORKDIR /app
 COPY . .
 
-# Downloading gcloud package
-RUN curl https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz > /tmp/google-cloud-sdk.tar.gz
-
-# Installing the package
-RUN mkdir -p /usr/local/gcloud \
-  && tar -C /usr/local/gcloud -xvf /tmp/google-cloud-sdk.tar.gz \
-  && /usr/local/gcloud/google-cloud-sdk/install.sh
+# Download and install gcloud package
+RUN curl -sSL https://sdk.cloud.google.com | bash
 
 # Adding the package path to local
 ENV PATH $PATH:/usr/local/gcloud/google-cloud-sdk/bin
+
+RUN exec -l $SHELL
+RUN gcloud init
 
 # get the project id
 RUN export PROJECT_ID=$(gcloud config get-value project)
