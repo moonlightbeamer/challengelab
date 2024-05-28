@@ -147,7 +147,7 @@ def ask_gemini(question, data):
         # response = gen_model.generate(
         #     ["what is the weather today in Longmont, CO"],
         # )
-        response = response[0].text
+        response = response.text
         # response = "hello"
     except:
         response = "Not implemented!"
