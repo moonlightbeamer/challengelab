@@ -10,7 +10,8 @@ ENV PATH $PATH:/usr/local/gcloud/google-cloud-sdk/bin
 
 # get the project id
 RUN export PROJECT_ID=$(gcloud config get-value project)
-ENV LOCATION="us-central1"
+ENV PROJECT_ID=acn-amex-account-poc-sandbox
+ENV LOCATION=us-central1
 RUN pip install gunicorn
 RUN pip install -r requirements.txt
 ENV PORT=8080
