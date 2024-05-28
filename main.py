@@ -4,7 +4,7 @@ from flask import Flask, render_template, request
 
 import firebase_admin
 from firebase_admin import firestore
-
+from google.cloud import aiplatform
 import vertexai
 from vertexai.generative_models import (
     GenerationConfig,
@@ -20,7 +20,7 @@ PROJECT_ID = os.getenv('PROJECT_ID')
 LOCATION = os.getenv('LOCATION')
 GEN_MODEL_ID = "gemini-1.5-flash-001"
 EMB_MODEL_ID = "textembedding-gecko@002"
-INDEX_ENDPOINT_NAME = "assessment-index-endpoint"
+INDEX_ENDPOINT_ID = "1466682540755517440"
 DEPLOYED_INDEX_ID = "assessment_index_deployed"
 
 # Instantiating the Firebase client
@@ -121,20 +121,20 @@ def search_vector_database(question):
     # 3. Get the IDs for the five embeddings that are returned
     # 4. Get the five documents from Firestore that match the IDs
     # 5. Concatenate the documents into a single string and return it
-    # # 1. Convert the question into an embedding
-    # raw_embeddings_with_metadata = embedding_model.get_embeddings([question])
-    # embedding = [embedding.values for embedding in raw_embeddings_with_metadata][0]
+    # 1. Convert the question into an embedding
+    raw_embeddings_with_metadata = embedding_model.get_embeddings([question])
+    embedding = [embedding.values for embedding in raw_embeddings_with_metadata][0]
 
-    # # 2. Search the Vector database for the 5 closest embeddings to the user's question
-    # search_results = INDEX_ENDPOINT_NAME.find_neighbors(
-    #     deployed_index_id = DEPLOYED_INDEX_ID,
-    #     queries = [embedding],
-    #     num_neighbors = 5
-    # )
+    # 2. Search the Vector database for the 5 closest embeddings to the user's question
+    search_results = aiplatform.MatchingEngineIndexEndpoint(INDEX_ENDPOINT_ID).find_neighbors(
+        deployed_index_id = DEPLOYED_INDEX_ID,
+        queries = [embedding],
+        num_neighbors = 5,
+    )
 
-    # # 3. Get the IDs for the five embeddings that are returned
-    # ids = [result.id for result in search_results]
-    ids = [1, 2, 3, 4, 5]
+    # 3. Get the IDs for the five embeddings that are returned
+    ids = [result.id for result in search_results[0]]
+
     # 4. Get the five documents from Firestore that match the IDs
     docs = firestore_db.collection("page_content").where(u'id', 'in', ids).stream()
 
