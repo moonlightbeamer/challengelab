@@ -107,9 +107,11 @@ def ask_gemini(question, data):
     # from their search
     # response = "Not implemented!"
     # return response
-    SYSTEM_PROMPT = "{CONTEXT} and you can only answer questions based on the data provided below, if you can't find answer, do not hallucinate, just say you can't find answer."
-    prompt = f"{SYSTEM_PROMPT} data: {data}\n\nUser: {question}\n\nAssistant: "
-    response = gen_model.generate(prompt, generation_config).text
+    # SYSTEM_PROMPT = "{CONTEXT} and you can only answer questions based on the data provided below, if you can't find answer, do not hallucinate, just say you can't find answer."
+    # prompt = f"{SYSTEM_PROMPT} data: {data}\n\nUser: {question}\n\nAssistant: "
+    # prompt = f"User: {question}\n\nAssistant: "
+    # response = gen_model.generate(prompt, generation_config).text
+    response = "{PROJECT_ID} {LOCATION} {question}"
     return response
 
 
