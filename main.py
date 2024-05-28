@@ -155,7 +155,7 @@ def ask_gemini(question, data):
     # from their search
     # SYSTEM_PROMPT = "{CONTEXT} and you can only answer questions based on the data provided below, if you can't find answer, do not hallucinate, just say you can't find answer."
     # Instantiate a Generative AI model here
-    prompt = "User: " + question + "\n\n Answer: "
+    prompt = "\n\n User: " + question + "\n\n Answer: "   # "data: " + data + 
     contents = [prompt]
     try:
         response = gen_model.generate_content(
