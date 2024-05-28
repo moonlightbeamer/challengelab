@@ -61,7 +61,7 @@ embedding_model = TextEmbeddingModel.from_pretrained(EMB_MODEL_ID)
 # Instantiate a generative model here
 gen_model = GenerativeModel(
     GEN_MODEL_ID,
-    system_prompt=CONTEXT + " and you can only answer questions based on the data provided below, if you can't find answer, do not hallucinate, just say you can't find answer.",
+    # system_prompt=CONTEXT + " and you can only answer questions based on the data provided below, if you can't find answer, do not hallucinate, just say you can't find answer.",
 )
 
 # Set generative model parameters
