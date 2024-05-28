@@ -131,12 +131,15 @@ def ask_gemini(question, data):
     # Instantiate a Generative AI model here
     prompt = "User: " + question + "\n\n Answer: "
     contents = [prompt]
-    response = gen_model.generate_content(
-        contents=contents,
-        generation_config=generation_config,
-        safety_settings=safety_settings,
-    )
-    response = response.text
+    try:
+        response = gen_model.generate_content(
+            contents=contents,
+            generation_config=generation_config,
+            safety_settings=safety_settings,
+        )
+        response = response.text
+    except:
+        response = "Not implemented."
     return response
         
 
